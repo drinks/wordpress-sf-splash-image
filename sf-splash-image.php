@@ -40,10 +40,10 @@ if (!class_exists('SFSplashImage')){
 
             // css & js
             wp_register_style('bootstrap-scoped', plugins_url(basename(dirname(__FILE__)) . "/css/bootstrap-scoped.min.css"));
-            wp_register_script('bootstrap', plugins_url(basename(dirname(__FILE__)) . "/js/bootstrap.min.js"), array('jquery'));
+            wp_register_script('bootstrap', plugins_url(basename(dirname(__FILE__)) . "/js/bootstrap.min.js"), array('jquery'), '3.0.3', true);
             wp_register_style('jquery-selectBoxIt', plugins_url(basename(dirname(__FILE__)) . "/css/jquery.selectBoxIt.css"));
-            wp_register_script('jquery-selectBoxIt', plugins_url(basename(dirname(__FILE__)) . "/js/jquery.selectBoxIt.min.js"), array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'bootstrap'));
-            wp_register_script('sf-splash-image', plugins_url(basename(dirname(__FILE__)) . "/js/sf-splash-image.js"), array('jquery-selectBoxIt'));
+            wp_register_script('jquery-selectBoxIt', plugins_url(basename(dirname(__FILE__)) . "/js/jquery.selectBoxIt.min.js"), array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'bootstrap'), '3.6.0', true);
+            wp_register_script('sf-splash-image', plugins_url(basename(dirname(__FILE__)) . "/js/sf-splash-image.js"), array('jquery-selectBoxIt'), false, true);
 
             wp_enqueue_style('jquery-selectBoxIt');
             wp_enqueue_style('bootstrap-scoped');
@@ -51,9 +51,6 @@ if (!class_exists('SFSplashImage')){
         }
 
         function add_meta_box() {
-            if(!current_user_can('edit_post', $post_id))
-                return;
-
             add_meta_box($this->namespace,
                          __('Choose a Splash Image', $this->namespace . '_textdomain'),
                          array(&$this, 'render_meta_box'),
@@ -61,7 +58,7 @@ if (!class_exists('SFSplashImage')){
         }
 
         function render_meta_box($post) {
-            if(!current_user_can('edit_post', $post_id))
+            if(!current_user_can('edit_post', $post->ID))
                 return;
 
             $context = array(

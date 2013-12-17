@@ -22,8 +22,7 @@ wp_nonce_field(plugin_basename(dirname(dirname(__FILE__))), $namespace . '_nonce
 <script>
 (function($){
     $(function(){
-        $("[rel='selectboxit']").selectBoxIt();
-        $("[rel='popover']").popover({ trigger: "hover", container: "#sf_splash_image_container", html: true });
+        $("#sf_splash_image_container [rel='selectboxit']").SFSelectBox();
     });
 })(jQuery);
 </script>

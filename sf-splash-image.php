@@ -40,10 +40,10 @@ if (!class_exists('SFSplashImage')){
 
             // css & js
             wp_register_style('bootstrap-scoped', plugins_url(basename(dirname(__FILE__)) . "/css/bootstrap-scoped.min.css"));
-            wp_register_script('bootstrap', plugins_url(basename(dirname(__FILE__)) . "/js/bootstrap.min.js"), array('jquery'), '3.0.3', true);
+            wp_register_script('bootstrap', plugins_url(basename(dirname(__FILE__)) . "/js/bootstrap.min.js"), array('jquery'), '3.0.3');
             wp_register_style('jquery-selectBoxIt', plugins_url(basename(dirname(__FILE__)) . "/css/jquery.selectBoxIt.css"));
-            wp_register_script('jquery-selectBoxIt', plugins_url(basename(dirname(__FILE__)) . "/js/jquery.selectBoxIt.min.js"), array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'bootstrap'), '3.6.0', true);
-            wp_register_script('sf-splash-image', plugins_url(basename(dirname(__FILE__)) . "/js/sf-splash-image.js"), array('jquery-selectBoxIt'), false, true);
+            wp_register_script('jquery-selectBoxIt', plugins_url(basename(dirname(__FILE__)) . "/js/jquery.selectBoxIt.min.js"), array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'bootstrap'), '3.6.0');
+            wp_register_script('sf-splash-image', plugins_url(basename(dirname(__FILE__)) . "/js/sf-splash-image.js"), array('jquery-selectBoxIt'), false);
 
             wp_enqueue_style('jquery-selectBoxIt');
             wp_enqueue_style('bootstrap-scoped');
@@ -92,7 +92,14 @@ if (!class_exists('SFSplashImage')){
             $content = apply_filters('the_content', $post->post_content);
             $pat = '/<img [^>]*src=["\']([^"\']+\.(png|gif|jpe?g))["\'][^>]*>/';
             preg_match_all($pat, $content, $matches);
-            return array_map(array(&$this, 'get_splash_url'), $matches[1]);
+            $matches = array_map(array(&$this, 'get_splash_url'), $matches[1]);
+            // Make sure that the current splash image is also included,
+            // if not found in the body text.
+            $selected_image = get_post_meta($post->ID, $this->meta_key, true);
+            if(!in_array($selected_image, $matches)){
+                array_push($matches, $selected_image);
+            }
+            return $matches;
         }
 
     }
